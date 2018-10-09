@@ -111,6 +111,12 @@
                                 title: '404页面'
                             }
                         ]
+                    },
+                    // 我的
+                    {
+                        icon: 'el-icon-rank',
+                        index: 'banner',
+                        title: 'banner'
                     }
                 ]
             }
