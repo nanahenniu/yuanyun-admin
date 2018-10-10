@@ -23,17 +23,32 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="商品封面:" prop="thumb">
+                    <!--<el-upload-->
+                        <!--class="avatar-uploader"-->
+                        <!--ref="thumbUpload"-->
+                        <!--v-model="form.thumb"-->
+                        <!--action=""-->
+                        <!--:show-file-list="false"-->
+                        <!--:on-success="handleAvatarSuccess"-->
+                        <!--:before-upload="beforeAvatarUpload"-->
+                        <!--:auto-upload="false">-->
+                        <!--<img v-if="imageUrl" :src="imageUrl" class="avatar">-->
+                        <!--<i v-else class="el-icon-plus avatar-uploader-icon"></i>-->
+                        <!--<div slot="tip" class="el-upload__tip">展示在商品列表和主页的产品封面图,可上传多张，支持JPG，PNG格式，文件大小请不要超过300KB</div>-->
+                    <!--</el-upload>-->
                     <el-upload
-                        class="avatar-uploader"
+                        class="upload-demo"
                         ref="thumbUpload"
-                        v-model="form.thumb"
                         action=""
-                        :show-file-list="false"
+                        name="thumbUpload"
+                        :on-preview="handlePreview"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        :auto-upload="false"
                         :on-success="handleAvatarSuccess"
                         :before-upload="beforeAvatarUpload"
-                        :auto-upload="false">
-                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                        list-type="picture">
+                        <el-button size="small" type="primary">点击上传</el-button>
                         <div slot="tip" class="el-upload__tip">展示在商品列表和主页的产品封面图,可上传多张，支持JPG，PNG格式，文件大小请不要超过300KB</div>
                     </el-upload>
                 </el-form-item>
@@ -42,7 +57,7 @@
                         class="upload-demo"
                         ref="picUpload"
                         action="http://mjwhqt.hjw988.com/api/uploads"
-                        v-model="form.pic"
+                        
                         :on-preview="handlePreview"
                         :on-remove="handleRemove"
                         :file-list="fileList"
@@ -88,7 +103,7 @@ import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
 import { quillEditor } from 'vue-quill-editor';
-import { GOODS_ADD } from '@/api/api-type';
+import { GOODS_ADD, API_UPLOADS, API_UPLOAD } from '@/api/api-type';
 export default {
   name: 'CreateGoods',
     data: function(){
@@ -180,20 +195,20 @@ export default {
     },
     methods: {
         onSubmit(formName) {
-            this.$refs.picUpload.submit()
+            // this.$refs.picUpload.submit()
             this.$refs.thumbUpload.submit()
-            this.$refs[formName].validate((valid) => {
-                if (valid) {
-                    this.form.token = this.token
-                    this.$axios.post(GOODS_ADD, this.form).then(res => {
-                        console.log(res)
-                    })
-                    alert('submit!');
-                } else {
-                    console.log('error submit!!');
-                    return false;
-                }
-            });
+            // this.$refs[formName].validate((valid) => {
+            //     if (valid) {
+            //         this.form.token = this.token
+            //         this.$axios.post(GOODS_ADD, this.form).then(res => {
+            //             console.log(res)
+            //         })
+            //         alert('submit!');
+            //     } else {
+            //         console.log('error submit!!');
+            //         return false;
+            //     }
+            // });
             // this.$message.success('提交成功！');
         },
         handleAvatarSuccess(res, file) {
@@ -202,7 +217,13 @@ export default {
             this.imageUrl = URL.createObjectURL(file.raw);
         },
         beforeAvatarUpload(file) {
+            // let formData = new FormData()
+            // formData.append('file',file)
+            // console.log(formData)
             console.log(file)
+            this.$axios.post(API_UPLOAD, {model: 'goods', file: file}).then(res => {
+                console.log(res)
+            })
             const isJPG = file.type === 'image/jpeg';
             const isLt2M = file.size / 1024 / 1024 < 2;
         
