@@ -3,57 +3,69 @@
         <div class="ms-login">
             <div class="ms-title">后台管理系统</div>
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="ms-content">
-                <el-form-item prop="username">
-                    <el-input v-model="ruleForm.username" placeholder="username">
+                <el-form-item prop="name">
+                    <el-input v-model="ruleForm.name" placeholder="请输入用户名">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
-                        <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
+                    <el-input type="password" placeholder="请输入密码" v-model="ruleForm.password" @keyup.enter.native="submitForm('ruleForm')">
+                            <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <p class="login-tips">Tips : 用户名和密码随便填。</p>
+                <!--<p class="login-tips">Tips : 用户名和密码随便填。</p>-->
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
-    export default {
-        data: function(){
-            return {
-                ruleForm: {
-                    username: 'admin',
-                    password: '123123'
-                },
-                rules: {
-                    username: [
-                        { required: true, message: '请输入用户名', trigger: 'blur' }
-                    ],
-                    password: [
-                        { required: true, message: '请输入密码', trigger: 'blur' }
-                    ]
-                }
-            }
-        },
-        methods: {
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        localStorage.setItem('ms_username',this.ruleForm.username);
-                        this.$router.push('/');
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
+import { ADMIN_LOGIN } from '@/api/api-type';
+export default {
+    data: function(){
+        return {
+            ruleForm: {
+                name: '',
+                password: ''
+            },
+            rules: {
+                name: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' }
+                ],
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur' }
+                ]
             }
         }
+    },
+    created () {
+    
+    },
+    methods: {
+            submitForm(formName) {
+                    // let _this = this
+                    this.$refs[formName].validate((valid) => {
+                            if (valid) {
+                                    this.$axios.post(ADMIN_LOGIN, this.ruleForm).then(res => {
+                                            if (res.data.error_code == 0) {
+                                                    localStorage.setItem('YY_ADMIN_TOKEN',res.data.data.token);
+                                                    localStorage.setItem('ms_username',res.data.data.name);
+                                                    this.$router.push('/');
+                                            } else if(res.data.error_code == 1007) {
+                                                    this.$message.error(res.data.error_msg);
+                                            }
+                                    });
+                            } else {
+                                    this.$message.error('请输入正确的用户名密码！');
+                                    return false;
+                            }
+                    });
+            }
     }
+}
 </script>
 
 <style scoped>

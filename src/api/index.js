@@ -3,13 +3,13 @@ import Vue from 'vue'
 import axios from 'axios'
 // import router from '../router'
 import qs from 'qs'
-import { Toast } from 'vant'
+import { Message } from 'element-ui';
 
 // 请求错误处理 注意根据具体的服务器端设置，此处仅仅是个示例
 const errorFn = err => {
   console.log(err.toString())
   if (err.toString().indexOf('timeout') !== -1) {
-    Toast('请求超时，请稍后再试')
+      Message.error('请求超时，请稍后再试')
   }
   if (err && err.response) {
     switch (err.response.status) {

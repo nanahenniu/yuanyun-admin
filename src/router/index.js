@@ -4,6 +4,7 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
+    mode: 'history',
     routes: [
         {
             path: '/',
@@ -49,13 +50,13 @@ export default new Router({
                     // markdown组件
                     path: '/markdown',
                     component: resolve => require(['../components/page/Markdown.vue'], resolve),
-                    meta: { title: 'markdown编辑器' }    
+                    meta: { title: 'markdown编辑器' }
                 },
                 {
                     // 图片上传组件
                     path: '/upload',
                     component: resolve => require(['../components/page/Upload.vue'], resolve),
-                    meta: { title: '文件上传' }   
+                    meta: { title: '文件上传' }
                 },
                 {
                     // vue-schart组件
@@ -84,6 +85,24 @@ export default new Router({
                     path: '/403',
                     component: resolve => require(['../components/page/403.vue'], resolve),
                     meta: { title: '403' }
+                },
+                {
+                    // banner文件
+                    path: '/banner',
+                    component: resolve => require(['../components/page/TheBanner.vue'], resolve),
+                    meta: { title: 'banner' }
+                },
+                {
+                    // 商品列表
+                    path: '/goodslist',
+                    component: resolve => require(['../components/page/goods/GoodsList.vue'], resolve),
+                    meta: { title: '商品' }
+                },
+                {
+                    // 创建商品
+                    path: '/creategoods',
+                    component: resolve => require(['../components/page/goods/CreateGoods.vue'], resolve),
+                    meta: { title: '创建商品' }
                 }
             ]
         },
