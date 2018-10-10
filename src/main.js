@@ -11,6 +11,7 @@ import "babel-polyfill";
 import './api'
 Vue.use(ElementUI, { size: 'small' });
 // Vue.prototype.$axios = axios;
+Vue.config.productionTip = false
 
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
