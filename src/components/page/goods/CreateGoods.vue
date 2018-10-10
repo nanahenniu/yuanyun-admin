@@ -8,7 +8,7 @@
     </div>
     <div class="container">
         <div class="form-box">
-            <el-form ref="form" :rules="rules" :model="form" label-width="100px">
+            <el-form id="form" ref="form" :rules="rules" :model="form" label-width="100px">
                 <el-form-item label="商品标题:" prop="title">
                     <el-input v-model="form.title"></el-input>
                 </el-form-item>
@@ -41,29 +41,22 @@
                         ref="thumbUpload"
                         action=""
                         name="thumbUpload"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :file-list="fileList"
+                        :file-list="fileList1"
                         :auto-upload="false"
-                        :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload"
+                        :before-upload="beforeThumbUpload"
                         list-type="picture">
                         <el-button size="small" type="primary">点击上传</el-button>
                         <div slot="tip" class="el-upload__tip">展示在商品列表和主页的产品封面图,可上传多张，支持JPG，PNG格式，文件大小请不要超过300KB</div>
                     </el-upload>
                 </el-form-item>
-                <el-form-item label="商品图组:" prop="pic">
+                <el-form-item label="商品图组:">
                     <el-upload
                         class="upload-demo"
                         ref="picUpload"
-                        action="http://mjwhqt.hjw988.com/api/uploads"
-                        
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :file-list="fileList"
+                        action=""
+                        :file-list="fileList2"
                         :auto-upload="false"
                         :multiple="true"
-                        :on-progress="handlePicSucess"
                         :before-upload="beforePicUpload  "
                         list-type="picture">
                         <el-button size="small" type="primary">点击上传</el-button>
@@ -187,7 +180,8 @@ export default {
                 placeholder: '请输入商品详情'
             },
             imageUrl: '',
-            fileList: []
+            fileList1: [],
+            fileList2: []
         }
     },
     components: {
@@ -195,8 +189,8 @@ export default {
     },
     methods: {
         onSubmit(formName) {
-            // this.$refs.picUpload.submit()
-            this.$refs.thumbUpload.submit()
+            this.$refs.picUpload.submit()
+            // this.$refs.thumbUpload.submit()
             // this.$refs[formName].validate((valid) => {
             //     if (valid) {
             //         this.form.token = this.token
@@ -211,42 +205,54 @@ export default {
             // });
             // this.$message.success('提交成功！');
         },
-        handleAvatarSuccess(res, file) {
-            console.log(res)
-            console.log(file)
-            this.imageUrl = URL.createObjectURL(file.raw);
-        },
-        beforeAvatarUpload(file) {
-            // let formData = new FormData()
-            // formData.append('file',file)
-            // console.log(formData)
-            console.log(file)
-            this.$axios.post(API_UPLOAD, {model: 'goods', file: file}).then(res => {
+        beforeThumbUpload(file) {
+            let formData = new FormData(document.getElementById('form'))
+            formData.append('file', file)
+            formData.set('model', 'goods')
+            let files = formData
+            console.log(files.get('model'))
+            this.$axios({
+                url: API_UPLOAD,
+                method: 'POST',
+                data: formData,
+                processData: false,
+                async: false,
+                contentType: false
+            }).then((res) => {
                 console.log(res)
+            }).catch(function (error) {
+                console.log(error)
             })
-            const isJPG = file.type === 'image/jpeg';
-            const isLt2M = file.size / 1024 / 1024 < 2;
-        
-            if (!isJPG) {
-                this.$message.error('上传头像图片只能是 JPG 格式!');
-            }
-            if (!isLt2M) {
-                this.$message.error('上传头像图片大小不能超过 2MB!');
-            }
-            return isJPG && isLt2M;
-        },
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
-        },
-        handlePreview(file) {
-            console.log(file);
-        },
-        handlePicSucess(res, file) {
-            console.log(res)
-            console.log(file)
+            // const isJPG = file.type === 'image/jpeg';
+            // const isLt2M = file.size / 1024 / 1024 < 2;
+						//
+            // if (!isJPG) {
+            //     this.$message.error('上传头像图片只能是 JPG 格式!');
+            // }
+            // if (!isLt2M) {
+            //     this.$message.error('上传头像图片大小不能超过 2MB!');
+            // }
+            // return isJPG && isLt2M;
         },
         beforePicUpload(file) {
-            console.log(pic)
+            let formData = new FormData(document.getElementById('form'))
+            console.log(file.length)
+            // formData.append('file', file)
+            // formData.set('model', 'goods')
+            // let files = formData
+            // console.log(files.get('model'))
+            this.$axios({
+                url: API_UPLOADS,
+                method: 'POST',
+                data: formData,
+                processData: false,
+                async: false,
+                contentType: false
+            }).then((res) => {
+                console.log(res)
+            }).catch(function (error) {
+                console.log(error)
+            })
         }
     }
   }
