@@ -87,12 +87,6 @@ export default new Router({
                     meta: { title: '403' }
                 },
                 {
-                    // banner文件
-                    path: '/banner',
-                    component: resolve => require(['../components/page/TheBanner.vue'], resolve),
-                    meta: { title: 'banner' }
-                },
-                {
                     // 商品列表
                     path: '/goodslist',
                     component: resolve => require(['../components/page/goods/GoodsList.vue'], resolve),
@@ -103,6 +97,30 @@ export default new Router({
                     path: '/creategoods',
                     component: resolve => require(['../components/page/goods/CreateGoods.vue'], resolve),
                     meta: { title: '创建商品' }
+                },
+                {
+                    // 资讯列表
+                    path: '/infolist',
+                    component: resolve => require(['../components/page/info/InfoList.vue'], resolve),
+                    meta: { title: '资讯' }
+                },
+                {
+                    // 增加资讯
+                    path: '/addinfo',
+                    component: resolve => require(['../components/page/info/AddInfo.vue'], resolve),
+                    meta: { title: '增加资讯' }
+                },
+                {
+                    // banner列表
+                    path: '/bannerlist',
+                    component: resolve => require(['../components/page/banner/BannerList.vue'], resolve),
+                    meta: { title: 'banner' }
+                },
+                {
+                    // 增加资讯
+                    path: '/addbanner',
+                    component: resolve => require(['../components/page/banner/AddBanner.vue'], resolve),
+                    meta: { title: '增加banner' }
                 }
             ]
         },

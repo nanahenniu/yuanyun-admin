@@ -112,17 +112,23 @@
                             }
                         ]
                     },
-                    // banner
-                    {
-                        icon: 'el-icon-lx-pic',
-                        index: 'banner',
-                        title: 'banner'
-                    },
                     // 商品
                     {
                         icon: 'el-icon-lx-text',
                         index: 'goodslist',
                         title: '商品'
+                    },
+                    // 咨询
+                    {
+                        icon: 'el-icon-lx-sort',
+                        index: 'infolist',
+                        title: '资讯'
+                    },
+                    // banner
+                    {
+                        icon: 'el-icon-lx-pic',
+                        index: 'bannerlist',
+                        title: 'banner'
                     }
                 ]
             }

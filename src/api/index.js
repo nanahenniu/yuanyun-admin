@@ -97,15 +97,17 @@ $axios.interceptors.request.use(
 )
 $axios.interceptors.response.use(
   response => {
-    // 如果状态码是ES7008，表示token失效，则直接跳转到登录页面
-    if (response.data.error_code === 5002) {
-      Toast(response.data.error_msg)
-      // setTimeout(function () {
-      //   router.replace({
-      //     path: '/login'
-      //   })
-      // }, 1500)
-      // window.location.href = 'http://mjwhqt.hjw988.com/api/login'
+    // 如果状态码是1002，表示该用户在其他设备登录，则直接跳转到登录页面
+    // 如果状态码是1019，表示该用户token失效，则直接跳转到登录页面
+    // 如果状态码是1003，表示该用户被冻结，则直接跳转到登录页面
+    if (response.data.error_code === 1002 || response.data.error_code === 1019 || response.data.error_code === 1003) {
+      Message.error(response.data.error_msg)
+      setTimeout(function () {
+          // window.location.href = 'http://meijinht.benxiong.org.cn/login'
+          window.location.href = 'http://localhost:8080/login'
+      }, 1500)
+    } else if (response.data.error_code === 1011 || response.data.error_code === 1012 || response.data.error_code === 2007) {
+        Message.error(response.data.error_msg)
     } else {
       return response
     }

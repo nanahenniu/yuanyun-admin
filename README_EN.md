@@ -94,7 +94,7 @@ Vue.js wrapper for sChart.js. Github : [vue-schart](https://github.com/linxin/vu
 		></schart>
     </div>
 </template>
-	
+
 <script>
     import Schart from 'vue-schart';
     export default {
@@ -145,14 +145,14 @@ The first step to remove the component of the routing. Enter 'src/router/index.j
 ```JavaScript
 {
     path: '/editor',
-    component: resolve => require(['../components/page/VueEditor.vue'], resolve) 
+    component: resolve => require(['../components/page/VueEditor.vue'], resolve)
 },
 ```
 
 Second,delete the component files. Enter 'src/components/page/' and delete 'VueEditor.vue' file.
 
 The third step is to delete the entry. Enter 'src/components/common/Sidebar.vue' and delete the code below.
-	
+
 ```js
 {
 	index: 'editor',
@@ -161,7 +161,7 @@ The third step is to delete the entry. Enter 'src/components/common/Sidebar.vue'
 ```
 
 Finally, uninstall this component.
-	
+
 	npm un vue-quill-editor -S
 
 Complete!

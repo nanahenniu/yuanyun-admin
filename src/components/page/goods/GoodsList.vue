@@ -18,7 +18,7 @@
                 <!--</el-col>-->
         <!--</el-row>-->
                 <el-row :gutter="20">
-                        <el-col :span="4" class="total-num">共有数据： 5条</el-col>
+                        <el-col :span="4" class="total-num">共有数据： {{totalPage}}条</el-col>
                         <el-col :span="20" align="right"><el-button type="primary" icon="search" @click="createGood">创建商品</el-button></el-col>
                 </el-row>
         </div>
@@ -28,9 +28,9 @@
             </el-table-column>
             <el-table-column prop="get_category.title" label="分类" align="center">
             </el-table-column>
-            <el-table-column prop="status" label="商品状态" align="center">
+            <el-table-column prop="status" label="商品状态" align="center" :formatter='filterStatus'>
             </el-table-column>
-            <el-table-column prop="type" label="推荐状态" align="center">
+            <el-table-column prop="type" label="推荐状态" align="center" :formatter="filterType">
             </el-table-column>
             <el-table-column prop="price" label="价格" align="center">
             </el-table-column>
@@ -38,15 +38,17 @@
             </el-table-column>
             <el-table-column prop="created_at" label="创建时间" align="center">
             </el-table-column>
-            <el-table-column label="操作" align="center">
+            <el-table-column label="操作" align="center" width="200">
                 <template slot-scope="scope">
-                    <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                    <!--<el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
+                    <el-button type="text" v-if="scope.row.status === 0" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">上架</el-button>
+                    <el-button type="text" v-if="scope.row.status === 1" icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">下架</el-button>
                     <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <div class="pagination">
-            <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next" :total="1000">
+            <el-pagination v-if="totalPage > 10" background @current-change="handleCurrentChange" layout="prev, pager, next" :total="totalPage">
             </el-pagination>
         </div>
     </div>
@@ -83,7 +85,7 @@
 </template>
 
 <script>
-import { GOODS_LIST } from '@/api/api-type'
+import { GOODS_LIST, GOODS_DELETE } from '@/api/api-type'
 export default {
 	name: 'Goods',
 		data() {
@@ -109,7 +111,9 @@ export default {
                     createTime: '', // 创建时间
                     address: ''
                 },
-                idx: -1
+                idx: -1,
+                totalPage: 0, // 总页数
+                goodId: 0
             }
 		},
 		created() {
@@ -136,6 +140,15 @@ export default {
         //     })
         // }
 		},
+        filters: {
+            getStatus(val) {
+                if (val == 1) {
+                    return '上架'
+                } else {
+                    return '下架'
+                }
+            }
+        },
 		methods: {
 		// 创建商品
 		createGood() {
@@ -148,18 +161,38 @@ export default {
 		},
         // 获取 easy-mock 的模拟数据
         getData() {
-            // 开发环境使用 easy-mock 数据，正式环境使用 json 文件
-            // if (process.env.NODE_ENV === 'development') {
-            //     this.url = '/ms/table/list';
-            // };
             this.$axios.post(GOODS_LIST, {
                 page: this.cur_page,
                 pagesize: 10,
                 token: this.token
             }).then((res) => {
-                console.log(res.data.data.data)
-                this.tableData = res.data.data.data;
+                if (res.data.error_code == 0) {
+                    console.log(res.data.data.data)
+                    this.totalPage = res.data.data.count
+                    this.tableData = res.data.data.data;
+                }
+                if (res.data.error_code == 9002) {
+                    this.totalPage = 0
+                }
             })
+        },
+        filterStatus (row, column, cellValue, index) {
+            if (cellValue !== null) {
+                if (cellValue == 1) {
+                    return '上架'
+                } else {
+                    return '下架'
+                }
+            }
+        },
+        filterType(row, column, cellValue, index) {
+            if (cellValue !== null) {
+                if (cellValue == 1) {
+                    return '推荐'
+                } else {
+                    return '不推荐'
+                }
+            }
         },
         // search() {
         //     this.is_search = true;
@@ -180,8 +213,10 @@ export default {
             }
             this.editVisible = true;
         },
+        //  删除商品
         handleDelete(index, row) {
             this.idx = index;
+            this.goodId = row.id
             this.delVisible = true;
         },
         delAll() {
@@ -206,8 +241,14 @@ export default {
         // 确定删除
         deleteRow(){
             this.tableData.splice(this.idx, 1);
-            this.$message.success('删除成功');
-            this.delVisible = false;
+            this.$axios.post(GOODS_DELETE, {token: this.token, goods_id: this.goodId}).then(res => {
+                if (res.data.error_code == 0) {
+                    this.$message.success('删除成功');
+                    this.delVisible = false;
+                } else {
+                    this.$message.waiting(res.data.error_msg)
+                }
+            })
         }
 		}
 	}

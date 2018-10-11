@@ -103,7 +103,7 @@ vue.js封装sChart.js的图表组件。访问地址：[vue-schart](https://githu
 		></schart>
     </div>
 </template>
-	
+
 <script>
     import Schart from 'vue-schart';        // 导入Schart组件
     export default {
@@ -160,14 +160,14 @@ vue.js封装sChart.js的图表组件。访问地址：[vue-schart](https://githu
 {
     // 富文本编辑器组件
     path: '/editor',
-    component: resolve => require(['../components/page/VueEditor.vue'], resolve) 
+    component: resolve => require(['../components/page/VueEditor.vue'], resolve)
 },
 ```
 
 第二步：删除引入该组件的文件。在目录 src/components/page/ 删除 VueEditor.vue 文件。
 
 第三步：删除该页面的入口。在目录 src/components/common/Sidebar.vue 中，找到该入口，删除下面这段代码。
-	
+
 ```js
 {
 	index: 'editor',
@@ -176,7 +176,7 @@ vue.js封装sChart.js的图表组件。访问地址：[vue-schart](https://githu
 ```
 
 第四步：卸载该组件。执行以下命令：
-	
+
 	npm un vue-quill-editor -S
 
 完成。
