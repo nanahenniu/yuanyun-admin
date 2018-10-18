@@ -121,6 +121,18 @@ export default new Router({
                     path: '/addbanner',
                     component: resolve => require(['../components/page/banner/AddBanner.vue'], resolve),
                     meta: { title: '增加banner' }
+                },
+                {
+                    // 订单列表
+                    path: '/orderlist',
+                    component: resolve => require(['../components/page/order/OrderList.vue'], resolve),
+                    meta: { title: '订单列表' }
+                },
+                {
+                    // 订单详情
+                    path: '/orderlistdetail',
+                    component: resolve => require(['../components/page/order/ListDetail.vue'], resolve),
+                    meta: { title: '订单详情' }
                 }
             ]
         },

@@ -130,6 +130,13 @@
                         index: 'bannerlist',
                         title: 'banner'
                     }
+                    ,
+                    // 订单管理
+                    {
+                        icon: 'el-icon-lx-tag',
+                        index: 'orderlist',
+                        title: '订单管理'
+                    }
                 ]
             }
         },

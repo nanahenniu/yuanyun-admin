@@ -8,7 +8,7 @@
             <el-input v-model="form.sort" placeholder="请输入排序值"></el-input>
         </el-form-item>
         <el-form-item label="跳转地址：" prop="url">
-            <el-input v-model="form.url" placeholder="请输入跳转地址"></el-input>
+            <el-input v-model="form.url" placeholder="https://"></el-input>
         </el-form-item>
         <el-form-item label="封面图片：" prop="pic">
             <el-upload
@@ -29,7 +29,7 @@
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="onSubmit('form')">上传</el-button>
-            <el-button>重置</el-button>
+            <!--<el-button>重置</el-button>-->
         </el-form-item>
     </el-form>
 </div>
