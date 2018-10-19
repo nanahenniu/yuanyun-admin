@@ -133,6 +133,18 @@ export default new Router({
                     path: '/orderlistdetail',
                     component: resolve => require(['../components/page/order/ListDetail.vue'], resolve),
                     meta: { title: '订单详情' }
+                },
+                {
+                    // 用户管理
+                    path: '/userlist',
+                    component: resolve => require(['../components/page/user/UserList.vue'], resolve),
+                    meta: { title: '用户管理' }
+                },
+                {
+                    // 用户详情
+                    path: '/userdetail',
+                    component: resolve => require(['../components/page/user/UserDetail.vue'], resolve),
+                    meta: { title: '用户详情' }
                 }
             ]
         },

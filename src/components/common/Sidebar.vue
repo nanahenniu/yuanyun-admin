@@ -136,6 +136,12 @@
                         icon: 'el-icon-lx-tag',
                         index: 'orderlist',
                         title: '订单管理'
+                    },
+                    // 用户管理
+                    {
+                        icon: 'el-icon-lx-people',
+                        index: 'userlist',
+                        title: '用户管理'
                     }
                 ]
             }
