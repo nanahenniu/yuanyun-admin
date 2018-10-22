@@ -15,12 +15,15 @@
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable">
                 <el-table-column prop="name" label="用户昵称" align="center">
+                    <template slot-scope="scope">
+                        <router-link :to="{path: '/userdetail', query: {'userId': scope.row.id}}">{{scope.row.name}}</router-link>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="" label="姓名" align="center">
+                <el-table-column prop="get_address.name" label="姓名" align="center">
                 </el-table-column>
-                <el-table-column prop="get_user.name" label="联系电话" align="center">
+                <el-table-column prop="get_address.mobile" label="联系电话" align="center">
                 </el-table-column>
-                <el-table-column prop="mobile" label="订单累计" align="center">
+                <el-table-column prop="get_order_count" label="订单累计" align="center">
                 </el-table-column>
                 <el-table-column prop="created_at" label="创建时间" align="center">
                 </el-table-column>
@@ -40,7 +43,13 @@
         data() {
             return {
                 token: localStorage.getItem('YY_ADMIN_TOKEN'),
-                tableData: [],
+                tableData: [{
+                    get_address: {
+                        mobile: '',
+                        name: ''
+                    }
+                }
+                ],
                 cur_page: 1,
                 totalPage: 0, // 总页数
                 seachUser: ''
