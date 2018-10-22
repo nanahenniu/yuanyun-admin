@@ -82,11 +82,11 @@
                     //         }
                     //     ]
                     // },
-                    // {
-                    //     icon: 'el-icon-lx-emoji',
-                    //     index: 'icon',
-                    //     title: '自定义图标'
-                    // },
+                    {
+                        icon: 'el-icon-lx-emoji',
+                        index: 'icon',
+                        title: '自定义图标'
+                    },
                     // {
                     //     icon: 'el-icon-lx-favor',
                     //     index: 'charts',
@@ -146,7 +146,7 @@
                     // 系统管理
                     {
                         icon: 'el-icon-lx-settings',
-                        index: 'userlist',
+                        index: '7',
                         title: '系统管理',
                         subs: [
                             {
