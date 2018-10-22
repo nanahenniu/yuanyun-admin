@@ -145,6 +145,19 @@ export default new Router({
                     path: '/userdetail',
                     component: resolve => require(['../components/page/user/UserDetail.vue'], resolve),
                     meta: { title: '用户详情' }
+                },
+                {
+                    // 权限管理
+                    path: '/permissionManage',
+                    component: resolve => require(['../components/page/systemManage/Permission.vue'], resolve),
+                    meta: { title: '权限管理' }
+                }
+                ,
+                {
+                    //管理员管理
+                    path: '/adminManage',
+                    component: resolve => require(['../components/page/systemManage/AdminManage.vue'], resolve),
+                    meta: { title: '管理员管理' }
                 }
             ]
         },

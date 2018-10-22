@@ -17,7 +17,7 @@
                             <el-option key="4" label="已发货" value="3"></el-option>
                         </el-select>
                     </el-col>
-                    <el-col :span="8">
+                    <el-col :span="10">
                         <el-date-picker
                             v-model="orderDate"
                             type="datetimerange"
@@ -27,9 +27,10 @@
                             end-placeholder="结束日期"
                             align="right">
                         </el-date-picker>
-                        <el-button type="primary" icon="search" @click="search">搜索</el-button>
+                        <!--<el-button type="primary" icon="search" @click="search">搜索</el-button>-->
+                        <el-button type="primary" icon="search" @click="searchAll">查看全部订单</el-button>
                     </el-col>
-                    <el-col :span="2"><el-button type="primary" icon="search" @click="searchAll">查看全部订单</el-button></el-col>
+                    <!--<el-col :span="2"><el-button type="primary" icon="search" @click="searchAll">查看全部订单</el-button></el-col>-->
                 </el-row>
                 <el-row :gutter="20">
                     <el-col :span="4" class="total-num">共有数据： {{totalPage}}条</el-col>
