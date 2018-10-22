@@ -158,7 +158,25 @@ export default new Router({
                     path: '/adminManage',
                     component: resolve => require(['../components/page/systemManage/AdminManage.vue'], resolve),
                     meta: { title: '管理员管理' }
-                }
+                },
+                {
+                    // 增加管理员
+                    path: '/addadmin',
+                    component: resolve => require(['../components/page/systemManage/AddAdmin.vue'], resolve),
+                    meta: { title: '增加admin' }
+                },
+                {
+                    // 分类
+                    path: '/categorylist',
+                    component: resolve => require(['../components/page/category/CategoryList.vue'], resolve),
+                    meta: { title: '分类管理' }
+                },
+                {
+                    // 增加分类
+                    path: '/addcategory',
+                    component: resolve => require(['../components/page/category/AddCategory.vue'], resolve),
+                    meta: { title: '增加分类' }
+                },
             ]
         },
         {

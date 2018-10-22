@@ -118,6 +118,12 @@
                         index: 'goodslist',
                         title: '商品'
                     },
+                    // 分类
+                    {
+                        icon: 'el-icon-more-outline',
+                        index: 'categorylist',
+                        title: '分类'
+                    },
                     // 咨询
                     {
                         icon: 'el-icon-lx-sort',
