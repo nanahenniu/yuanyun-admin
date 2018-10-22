@@ -13,16 +13,15 @@
         <el-form-item label="封面图片：" prop="pic">
             <el-upload
                 ref="thumbUpload"
-                action="http://mjwhqt.hjw988.com/api/upload"
+                action=""
                 name="thumbUpload"
                 accept="image/jpeg,image/png"
                 :limit="1"
-                :auto-upload="false"
                 :http-request='submitThumbUpload'
                 :before-upload="beforeThumbUpload"
                 list-type="picture">
                 <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传文件</el-button>
+                <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传文件</el-button>-->
                 <div slot="tip" class="el-upload__tip">支持JPG，PNG格式，单张大小请小于500Kb</div>
             </el-upload>
         </el-form-item>
@@ -57,17 +56,44 @@ export default {
         }
     },
     methods: {
-        submitUpload () {
-            // 单图上传手动提交
-            // this.form.pic = '';
-            alert(1)
-            this.$refs.thumbUpload.submit();
-        },
+        //我把自动上传改成true了，这段没必要了
+        // submitUpload () {
+        //     // 单图上传手动提交
+        //     // this.form.pic = '';
+        //     this.$refs.thumbUpload.submit();
+        // },
         beforeThumbUpload (file) {
             const isLt2M = file.size / 1024 < 500;
             if (!isLt2M) {
                 this.$message.error(file.name +  '图片大小不能超过 500kb!');
                 return false
+            } else {
+                let formData = new FormData(document.getElementById('form'))
+                formData.append('file', file)
+                formData.set('model', 'info')
+                let files = formData
+                console.log(files.get('model'))
+                this.$axios({
+                    url: API_UPLOAD,
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    async: false,
+                    contentType: false
+                }).then((res) => {
+                    console.log(res.data.data)
+                    if (res.data.error_code == 0) {
+                        this.form.pic = res.data.data.url
+                        //后台没有给thumb字段，但是这个接口必须要这个字段，先用pic的值
+                        this.form.thumb = res.data.data.url
+                        console.log(this.form)
+                        // this.form.fileList.push(res.data.url)
+                        this.$message.success('图片上传成功！')
+                    }
+                    console.log(this.form.pic)
+                }).catch(function (error) {
+                    console.log(error)
+                })
             }
         },
         submitThumbUpload () {
