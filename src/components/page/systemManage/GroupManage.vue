@@ -3,7 +3,7 @@
         <div class="handle-box">
             <el-row :gutter="20">
                 <el-col :span="4" class="total-num">共有数据： {{totalPage}}条</el-col>
-                <el-col :span="20" align="right"><el-button type="primary" icon="search">新建</el-button></el-col>
+                <el-col :span="20" align="right"><el-button type="primary" icon="search" @click="creatGroup">新建</el-button></el-col>
             </el-row>
         </div>
         <el-table :data="tableData" border class="table" ref="multipleTable">
@@ -29,13 +29,21 @@
             <el-pagination v-if="totalPage > 10" background @current-change="handleCurrentChange" layout="prev, pager, next" :total="totalPage">
             </el-pagination>
         </div>
+        <!-- 删除提示框 -->
+        <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
+            <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+            <span slot="footer" class="dialog-footer">
+            <el-button @click="delVisible = false">取 消</el-button>
+            <el-button type="primary" @click="deleteRow">确 定</el-button>
+        </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { GROUP_LIST } from '@/api/api-type'
+import { GROUP_LIST, GROUP_DELETE } from '@/api/api-type'
 export default {
-    name: 'Permission',
+    name: 'GroupManage',
     data () {
         return {
             token: localStorage.getItem('YY_ADMIN_TOKEN'),
@@ -43,6 +51,9 @@ export default {
             }],
             cur_page: 1,
             totalPage: 0, // 总页数
+            delVisible: false,
+            idx: -1,
+            groupId: 0
         }
     },
     created() {
@@ -69,6 +80,26 @@ export default {
                     this.totalPage = 0
                 }
             })
+        },
+        handleDelete(index, row) {
+            this.idx = index;
+            this.groupId = row.id;
+            this.delVisible = true;
+        },
+        // 确定删除
+        deleteRow(){
+            this.tableData.splice(this.idx, 1);
+            this.$axios.post(GROUP_DELETE, {token: this.token, group_id: this.groupId}).then(res => {
+                if (res.data.error_code == 0) {
+                    this.$message.success('删除成功');
+                    this.delVisible = false;
+                } else {
+                    this.$message.waiting(res.data.error_msg)
+                }
+            })
+        },
+        creatGroup() {
+            this.$router.push('/addgroup')
         }
     }
 }

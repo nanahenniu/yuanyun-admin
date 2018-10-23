@@ -148,11 +148,16 @@ export default new Router({
                 },
                 {
                     // 权限管理
-                    path: '/permissionManage',
-                    component: resolve => require(['../components/page/systemManage/Permission.vue'], resolve),
+                    path: '/groupmanage',
+                    component: resolve => require(['../components/page/systemManage/GroupManage.vue'], resolve),
                     meta: { title: '权限管理' }
-                }
-                ,
+                },
+                {
+                    // 权限管理
+                    path: '/addgroup',
+                    component: resolve => require(['../components/page/systemManage/AddGroup.vue'], resolve),
+                    meta: { title: '权限管理' }
+                },
                 {
                     //管理员管理
                     path: '/adminManage',

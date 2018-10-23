@@ -104,7 +104,7 @@ export default {
           this.$axios.post(CATEGORY_DELETE, {token: this.token, category_id: this.categoryId}).then(res => {
               if (res.data.error_code == 0) {
                   this.$message.success('删除成功');
-                  this.delVisible = false;
+                      this.delVisible = false;
               } else {
                   this.$message.waiting(res.data.error_msg)
               }
