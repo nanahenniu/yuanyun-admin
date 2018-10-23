@@ -156,7 +156,7 @@
                         title: '系统管理',
                         subs: [
                             {
-                                index: 'permissionManage',
+                                index: 'groupmanage',
                                 title: '权限管理'
                             },
                             {
