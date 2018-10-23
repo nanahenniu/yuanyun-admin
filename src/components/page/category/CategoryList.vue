@@ -8,10 +8,14 @@
         </div>
         <el-table :data="listData" border class="table">
             <el-table-column
-                prop="title"
                 label="分类名称"
                 width="180"
                 align="center">
+                <template slot-scope="scope">
+                    <router-link class="check-link" :to="{path:'/addCategory',query: {id: scope.row.id}}">
+                        <span style="margin-left: 10px" class="check-link">{{ scope.row.title }}</span>
+                    </router-link>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="sort"

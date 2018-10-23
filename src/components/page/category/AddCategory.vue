@@ -1,6 +1,6 @@
 <template>
 <div class="container">
-    <el-form id="form" ref="form"  :rules="rules" :model="form" label-width="120px">
+    <el-form id="form" ref="for11111m"  :rules="rules" :model="form" label-width="120px">
        <el-form-item label="分类名称：" prop="title">
            <el-input v-model="form.title" placeholder="请输入分类名称" :maxlength="20"></el-input>
        </el-form-item>
