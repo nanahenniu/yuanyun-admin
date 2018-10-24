@@ -8,18 +8,19 @@
         </div>
         <el-table :data="tableData" border class="table" ref="multipleTable">
             <el-table-column prop="title" label="权限组名称" align="center">
-                <!--<template slot-scope="scope">-->
-                    <!--<router-link :to="{path: '/userdetail', query: {'userId': scope.row.id}}">{{scope.row.name}}</router-link>-->
-                <!--</template>-->
+                <template slot-scope="scope">
+                    <router-link :to="{path: '/groupdetail', query: {'groupId': scope.row.id, createName: scope.row.get_admin.name}}">{{scope.row.title}}</router-link>
+                </template>
             </el-table-column>
             <el-table-column prop="desc" label="描述" align="center">
             </el-table-column>
-            <el-table-column prop="get_address.mobile" label="创建人" align="center">
+            <el-table-column prop="get_admin.name" label="创建人" align="center">
             </el-table-column>
             <el-table-column prop="created_at" label="创建时间" align="center">
             </el-table-column>
-            <el-table-column label="操作" align="center" width="200">
+            <el-table-column label="操作" align="center" width="300">
                 <template slot-scope="scope">
+                    <el-button type="text" icon="el-icon-edit" class="red" @click="setPermission(scope.$index, scope.row)">权限设置</el-button>
                     <el-button type="text" icon="el-icon-view" class="red" @click="preview(scope.$index, scope.row)">查看</el-button>
                     <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
@@ -48,6 +49,9 @@ export default {
         return {
             token: localStorage.getItem('YY_ADMIN_TOKEN'),
             tableData: [{
+                get_admin: {
+                    name: ''
+                }
             }],
             cur_page: 1,
             totalPage: 0, // 总页数
@@ -100,6 +104,16 @@ export default {
         },
         creatGroup() {
             this.$router.push('/addgroup')
+        },
+        // 权限设置
+        setPermission(index, row) {
+            this.$router.push({
+                path: '/setpermission',
+                query: {
+                    adminId: row.admin_id,
+                    groupId: row.id
+                }
+            })
         }
     }
 }

@@ -4,6 +4,12 @@
        <el-form-item label="用户账号：" prop="name">
            <el-input v-model="form.name" placeholder="请输入用户账号" :maxlength="20"></el-input>
        </el-form-item>
+        <el-form-item label="管理员名称：" prop="title">
+            <el-input v-model="form.title" placeholder="请输入管理员名称" :maxlength="20"></el-input>
+        </el-form-item>
+        <el-form-item label="email：" prop="email">
+            <el-input v-model="form.email" placeholder="请输入email"></el-input>
+        </el-form-item>
         <el-form-item label="密码：" prop="password">
             <el-input v-model="form.password" placeholder="请输入密码"></el-input>
         </el-form-item>
@@ -30,11 +36,15 @@ export default {
             form: {
                 token: localStorage.getItem('YY_ADMIN_TOKEN'),
                 name: '',
+                title: '',
+                email: '',
                 password: '',
                 group_id: ''
             },
             rules: {
                 name: [{required: true, message: '用户账号不能为空', trigger: 'blur' }],
+                title: [{required: true, message: '管理员名称不能为空', trigger: 'blur' }],
+                email: [{required: true, message: 'email不能为空', trigger: 'blur' }],
                 password: [{required: true, message: '密码不能为空', trigger: 'blur'}],
                 group_id: [{required: true, message: '请选择管理组', trigger: 'change'}],
             },

@@ -156,7 +156,19 @@ export default new Router({
                     // 权限管理
                     path: '/addgroup',
                     component: resolve => require(['../components/page/systemManage/AddGroup.vue'], resolve),
-                    meta: { title: '权限管理' }
+                    meta: { title: '新增管理组' }
+                },
+                {
+                    // 权限管理组详情
+                    path: '/groupdetail',
+                    component: resolve => require(['../components/page/systemManage/GroupDetail.vue'], resolve),
+                    meta: { title: '管理组详情' }
+                },
+                {
+                    // 权限设置
+                    path: '/setpermission',
+                    component: resolve => require(['../components/page/systemManage/SetPermission.vue'], resolve),
+                    meta: { title: '权限设置' }
                 },
                 {
                     //管理员管理

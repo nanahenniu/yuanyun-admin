@@ -62,3 +62,5 @@ export const BANNER_DELETE = BASE_URL + '/admin/banner/delete' // banner删除
 /* ******************** 通用接口 ******************* */
 export const API_UPLOADS = BASE_URL + '/api/uploads' // 多图上传
 export const API_UPLOAD = BASE_URL + '/api/upload' // 单图上传
+export const GETALLGROUP = BASE_URL + '/api/getAllGroup' // 获取权限组
+export const GETALLROULES = BASE_URL + '/api/getAllRules' // 获取权限

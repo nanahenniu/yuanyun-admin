@@ -8,7 +8,7 @@
                 </el-row>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable">
-                <el-table-column prop="name" label="管理员名称" align="center">
+                <el-table-column prop="title" label="管理员名称" align="center">
                     <!--<template slot-scope="scope">-->
                     <!--<router-link :to="{path: '/userdetail', query: {'userId': scope.row.id}}">{{scope.row.name}}</router-link>-->
                     <!--</template>-->
