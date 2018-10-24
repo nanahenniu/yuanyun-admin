@@ -149,6 +149,12 @@
                         index: 'userlist',
                         title: '用户管理'
                     },
+                    // message
+                    {
+                        icon: 'el-icon-lx-comment',
+                        index: 'message',
+                        title: '留言管理'
+                    },
                     // 系统管理
                     {
                         icon: 'el-icon-lx-settings',

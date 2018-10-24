@@ -41,15 +41,15 @@ export default {
                 if (res.data.error_code == 0) {
                     this.treeData = res.data.data
                 }
-            })
+            });
             this.$axios.post(ROULE_DETAIL, {token: this.token, admin_id: this.adminId, group_id: this.groupId}).then(res => {
                 if (res.data.error_code == 0) {
                     this.defaultData = res.data.data.rules
                 }
-            })
+            });
         },
         getCheckedKeys(data) {
-            console.log(data)
+            // console.log(data)
         },
         submit() {
             let ruleArr = this.$refs.tree.getCheckedKeys()

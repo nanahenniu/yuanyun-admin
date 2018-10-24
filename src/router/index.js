@@ -194,6 +194,12 @@ export default new Router({
                     component: resolve => require(['../components/page/category/AddCategory.vue'], resolve),
                     meta: { title: '增加分类' }
                 },
+                {
+                    // 留言管理
+                    path: '/message',
+                    component: resolve => require(['../components/page/message/Message.vue'], resolve),
+                    meta: { title: '增加分类' }
+                },
             ]
         },
         {
