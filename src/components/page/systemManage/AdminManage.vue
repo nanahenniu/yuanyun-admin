@@ -20,10 +20,12 @@
                 </el-table-column>
                 <el-table-column prop="created_at" label="创建时间" align="center">
                 </el-table-column>
-                <el-table-column label="操作" align="center" width="200">
+                <el-table-column label="操作" align="center" width="300">
                     <template slot-scope="scope">
-                        <el-button type="text" icon="el-icon-view" class="red" @click="preview(scope.$index, scope.row)">查看</el-button>
+                        <el-button type="text" icon="el-icon-view" class="red" @click="preview(scope.$index, scope.row)">编辑</el-button>
                         <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button type="primary" v-if="scope.row.status=='1'"  @click="changeStatus(scope.$index, scope.row)">冻结</el-button>
+                        <el-button type="danger" v-else @click="changeStatus(scope.$index, scope.row)">激活</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -40,11 +42,19 @@
             <el-button type="primary" @click="deleteRow">确 定</el-button>
         </span>
         </el-dialog>
+        <!-- 冻结/解冻 -->
+        <el-dialog title="提示" :visible.sync="delVisibleFreeze" width="300px" center>
+            <div class="del-dialog-cnt">确认操作？</div>
+            <span slot="footer" class="dialog-footer">
+            <el-button @click="delVisibleFreeze = false">取 消</el-button>
+            <el-button type="primary" @click="toChange">确 定</el-button>
+        </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { ADMIN_LIST, ADMIN_DELETE } from '@/api/api-type'
+import { ADMIN_LIST, ADMIN_DELETE, ADMIN_FREEZE, ADMIN_UNFREEZE } from '@/api/api-type'
 
 export default {
     name: 'AdminManage',
@@ -55,8 +65,10 @@ export default {
             cur_page: 1,
             totalPage: 0, // 总页数
             delVisible: false,
+            delVisibleFreeze: false,
             idx: -1,
             adminId: 0,
+            freezeStatus: 1 //默认是激活的
         }
     },
     created() {
@@ -102,6 +114,27 @@ export default {
                     this.delVisible = false;
                 } else {
                     this.$message.waiting(res.data.error_msg)
+                }
+            })
+        },
+        changeStatus(index, row) {
+            this.idx = index;
+            this.adminId = row.id;
+            this.delVisibleFreeze = true;
+            this.freezeStatus = row.status
+        },
+        // 确定删除
+        toChange(){
+            let _this = this;
+            let url = '';
+            _this.freezeStatus === 1?url = ADMIN_FREEZE : url = ADMIN_UNFREEZE
+            this.$axios.post(url, {token: _this.token, admin_id: _this.adminId}).then(res => {
+                if (res.data.error_code == 0) {
+                    _this.$message.success('操作成功');
+                    _this.delVisibleFreeze = false;
+                    _this.getData()
+                } else {
+                    _this.$message.waiting(res.data.error_msg)
                 }
             })
         },
