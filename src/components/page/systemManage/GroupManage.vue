@@ -20,8 +20,8 @@
             </el-table-column>
             <el-table-column label="操作" align="center" width="300">
                 <template slot-scope="scope">
-                    <el-button type="text" icon="el-icon-edit" class="red" @click="setPermission(scope.$index, scope.row)">权限设置</el-button>
-                    <el-button type="text" icon="el-icon-view" class="red" @click="preview(scope.$index, scope.row)">查看</el-button>
+                    <el-button type="text" icon="el-icon-setting" class="red" @click="setPermission(scope.$index, scope.row)">权限设置</el-button>
+                    <!--<el-button type="text" icon="el-icon-edit-outline" class="red" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
                     <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -93,10 +93,12 @@ export default {
         // 确定删除
         deleteRow(){
             this.tableData.splice(this.idx, 1);
+            let _this =this
             this.$axios.post(GROUP_DELETE, {token: this.token, group_id: this.groupId}).then(res => {
                 if (res.data.error_code == 0) {
                     this.$message.success('删除成功');
                     this.delVisible = false;
+                    _this.getData()
                 } else {
                     this.$message.waiting(res.data.error_msg)
                 }
@@ -115,6 +117,16 @@ export default {
                 }
             })
         }
+        // handleEdit(index, row) {
+        //     this.$router.push({
+        //         path: '/setpermission',
+        //         query: {
+        //             adminId: row.admin_id,
+        //             groupId: row.id,
+        //             isEdit: true
+        //         }
+        //     })
+        // }
     }
 }
 </script>

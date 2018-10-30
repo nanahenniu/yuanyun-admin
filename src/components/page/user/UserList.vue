@@ -4,7 +4,7 @@
             <div class="handle-box">
                 <el-row :gutter="20">
                     <el-col :span="5">
-                        <el-input placeholder="请输入用户名进行查询" v-model="seachUser" clearable>
+                        <el-input placeholder="请输入用户名进行查询" v-model="seachVal" clearable>
                             <el-button slot="append" icon="el-icon-search" @click="searchUser"></el-button>
                         </el-input>
                     </el-col>
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-    import { USER_LIST } from '@/api/api-type'
+    import { USER_LIST, USER_KEYWORD } from '@/api/api-type'
     export default {
         name: 'UserList',
         data() {
@@ -52,7 +52,8 @@
                 ],
                 cur_page: 1,
                 totalPage: 0, // 总页数
-                seachUser: ''
+                seachVal: '',
+                isSearch: false
             }
         },
         created() {
@@ -62,7 +63,11 @@
             // 分页导航
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.getData();
+                if (this.isSearch) {
+                    this.searchUser()
+                } else {
+                    this.getData();
+                }
             },
             getData() {
                 this.$axios.post(USER_LIST, {
@@ -80,7 +85,25 @@
                     }
                 })
             },
-            searchUser() {}
+            searchUser() {
+                let str = this.seachVal.replace(/(^\s*)/g, "");
+                this.isSearch = true;
+                if (str !== '') {
+                    this.$axios.post(USER_KEYWORD, {token: this.token, keyword: this.seachVal, page: this.cur_page, pagesize: 10}).then(res => {
+                        // console.log(res)
+                        if (res.data.error_code == 0) {
+                            this.totalPage = res.data.data.count
+                            this.tableData = res.data.data.data;
+                        } else {
+                            this.$message.warning(res.data.error_msg)
+                            this.totalPage = 0
+                            this.tableData = [];
+                        }
+                    })
+                } else {
+                    this.$message.warning('搜索内容不能为空哦~')
+                }
+            }
         }
     }
 </script>

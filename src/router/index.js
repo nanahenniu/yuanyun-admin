@@ -105,6 +105,12 @@ export default new Router({
                     meta: { title: '资讯' }
                 },
                 {
+                    // 资讯详情
+                    path: '/infodetail',
+                    component: resolve => require(['../components/page/info/InfoDetail.vue'], resolve),
+                    meta: { title: '资讯详情' }
+                },
+                {
                     // 增加资讯
                     path: '/addinfo',
                     component: resolve => require(['../components/page/info/AddInfo.vue'], resolve),
@@ -117,10 +123,16 @@ export default new Router({
                     meta: { title: 'banner' }
                 },
                 {
-                    // 增加资讯
+                    // 增加banner
                     path: '/addbanner',
                     component: resolve => require(['../components/page/banner/AddBanner.vue'], resolve),
                     meta: { title: '增加banner' }
+                },
+                {
+                    // 编辑banner
+                    path: '/editbanner',
+                    component: resolve => require(['../components/page/banner/EditBanner.vue'], resolve),
+                    meta: { title: '编辑banner' }
                 },
                 {
                     // 订单列表

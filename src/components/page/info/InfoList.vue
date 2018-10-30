@@ -13,6 +13,9 @@
                 label="资讯名称"
                 width="180"
                 align="center">
+                <template slot-scope="scope">
+                    <router-link :to="{path: '/infodetail',  query: {infoId: scope.row.id}}">{{scope.row.title}}</router-link>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="type"
@@ -43,6 +46,7 @@
             </el-table-column>
             <el-table-column label="操作" align="center" width="200">
                 <template slot-scope="scope">
+                    <el-button type="text" icon="el-icon-edit-outline" class="red" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -115,10 +119,12 @@ export default {
       // 确定删除
       deleteRow(){
           this.infoListData.splice(this.idx, 1);
+          let _this = this;
           this.$axios.post(INFO_DELETE, {token: this.token, info_id: this.infoId}).then(res => {
               if (res.data.error_code == 0) {
                   this.$message.success('删除成功');
                   this.delVisible = false;
+                  _this.initData()
               } else {
                   this.$message.waiting(res.data.error_msg)
               }
@@ -127,6 +133,15 @@ export default {
       // 新建资讯
       createInfo() {
           this.$router.push('/addinfo')
+      },
+      handleEdit(index, row) {
+          this.$router.push({
+              path: '/addinfo',
+              query: {
+                  isEdit: true,
+                  infoId: row.id
+              }
+          })
       }
   }
 }

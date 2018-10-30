@@ -17,13 +17,13 @@
                 name="thumbUpload"
                 accept="image/jpeg,image/png"
                 :limit="1"
-                :file-list="form.fileList"
+                :file-list="fileList"
                 :auto-upload="true"
                 :http-request='submitThumbUpload'
                 :before-upload="beforeThumbUpload"
                 list-type="picture"
-                :on-remove="delThumb">
-                <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                :on-remove="removeFile">
+                <el-button slot="trigger" size="small" type="primary">上传文件</el-button>
                 <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传文件</el-button>-->
                 <div slot="tip" class="el-upload__tip">支持JPG，PNG格式，单张大小请小于500Kb</div>
             </el-upload>
@@ -37,20 +37,22 @@
 </template>
 
 <script>
-import { BANNER_ADD, API_UPLOAD} from '@/api/api-type'
+import { BANNER_UPDATE, API_UPLOAD, BANNER_DETAIL} from '@/api/api-type'
 export default {
-    name: 'AddBanner',
+    name: 'EditBanner',
     data () {
         return {
+            bannerId:　this.$route.query.bannerId,
+            token: localStorage.getItem('YY_ADMIN_TOKEN'),
             form: {
                 token: localStorage.getItem('YY_ADMIN_TOKEN'),
                 title: '',
-                sort: 0,
+                sort: '',
                 url: '',
-                content: '',
-                fileList: [],
-                pic: ''
+                pic: '',
+                // fileList: []
             },
+            fileList: [],
             rules: {
                 title: [{required: true, message: '资讯名称不能为空', trigger: 'blur' }],
                 sort: [{required: true, message: '排序值不能为空', trigger: 'blur'}],
@@ -59,13 +61,35 @@ export default {
             }
         }
     },
+    created() {
+        let _this = this
+        this.$axios.post(BANNER_DETAIL, {token: this.token, banner_id: this.bannerId}).then(res => {
+            console.log(res)
+            if (res.data.error_code == 0) {
+                let result = res.data.data
+                _this.form = {
+                    token: localStorage.getItem('YY_ADMIN_TOKEN'),
+                    title: result.title,
+                    sort: result.sort,
+                    url: result.url,
+                    pic: result.pic,
+                    // fileList: [{
+                    //     name: result.pic,
+                    //     name: result.pic
+                    // }]
+                }
+                _this.fileList = [{
+                    name: result.pic,
+                    url: result.pic
+                }]
+            }
+            
+        })
+    },
     methods: {
-        // submitUpload () {
-        //     // 单图上传手动提交
-        //     this.form.pic = '';
-        //     this.$refs.thumbUpload.submit();
-        // },
         beforeThumbUpload (file) {
+            console.log(file)
+            this.fileList = []
             const isLt2M = file.size / 1024 < 500;
             if (!isLt2M) {
                 this.$message.error(file.name +  '图片大小不能超过 500kb!');
@@ -74,8 +98,6 @@ export default {
                 let formData = new FormData(document.getElementById('form'))
                 formData.append('file', file)
                 formData.set('model', 'info')
-                let files = formData
-                console.log(files.get('model'))
                 this.$axios({
                     url: API_UPLOAD,
                     method: 'POST',
@@ -84,31 +106,39 @@ export default {
                     async: false,
                     contentType: false
                 }).then((res) => {
-                    console.log(res.data.data)
+                    // console.log(res.data.data)
                     if (res.data.error_code == 0) {
                         this.form.pic = res.data.data.url
-                        console.log(this.form)
-                        // this.form.fileList.push(res.data.url)
+                        let obj = {
+                            name: res.data.data.url,
+                            url: res.data.data.url
+                        }
+                        this.fileList.push(obj)
                         this.$message.success('图片上传成功！')
                     }
-                    console.log(this.form.pic)
                 }).catch(function (error) {
                     console.log(error)
                 })
             }
         },
+        removeFile(file, fileList) {
+            this.form.pic = ''
+        },
         submitThumbUpload () {
+        },
+        delThumb(file, fileList) {
+            this.form.thumb = []
         },
         onSubmit (formName) {
             let _this = this
             _this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    // _this.form.token = _this.token
-                    _this.$axios.post(BANNER_ADD, _this.form).then(res => {
+                    _this.form.banner_id = _this.$route.query.bannerId
+                    _this.$axios.post(BANNER_UPDATE, _this.form).then(res => {
                         console.log(res)
                         if(res.data.error_code == 0) {
                             // console.log(11111111111)
-                            _this.$message.success('banner创建成功！');
+                            _this.$message.success('banner修改成功！');
                             _this.$router.push('/bannerlist')
                         } else {
                             this.$message.error(res.data.error_msg)

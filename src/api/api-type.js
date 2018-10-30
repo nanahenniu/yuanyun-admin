@@ -36,6 +36,7 @@ export const CATEGORY_DELETE = BASE_URL + '/admin/category/delete' // 分类删�
 /* **** 用户 **** */
 export const USER_LIST = BASE_URL + '/admin/user/list' // 用户列表
 export const USER_DETAIL = BASE_URL + '/admin/user/detail' // 用户详情
+export const USER_KEYWORD = BASE_URL + '/admin/user/keyword' // 用户检索
 /* **** 订单 **** */
 export const ORDER_UPDATE = BASE_URL + '/admin/order/update' // 订单发货
 export const ORDER_LIST = BASE_URL + '/admin/order/list' // 订单列表

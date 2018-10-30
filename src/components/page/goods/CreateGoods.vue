@@ -29,12 +29,13 @@
                         accept="image/jpeg,image/gif,image/png"
                         :limit="1"
                         :file-list="fileList"
-                        :auto-upload="false"
+                        :auto-upload="true"
                         :before-upload="beforeThumbUpload"
                         :http-request='submitThumbUpload'
-                        list-type="picture">
-                        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传文件</el-button>
+                        list-type="picture"
+                        :on-remove="delThumb">
+                        <el-button slot="trigger" size="small" type="primary">上传文件</el-button>
+                        <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传文件</el-button>-->
                         <div slot="tip" class="el-upload__tip">展示在商品列表和主页的产品封面图,可上传多张，支持JPG，PNG格式，文件大小请不要超过300KB</div>
                     </el-upload>
                 </el-form-item>
@@ -45,13 +46,14 @@
                         action=""
                         accept="image/jpeg,image/gif,image/png"
                         :file-list="fileLists"
-                        :auto-upload="false"
+                        :auto-upload="true"
                         :multiple="true"
                         :http-request='submitPicUpload'
                         :before-upload="beforePicUpload"
-                        list-type="picture">
-                        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploads">上传文件</el-button>
+                        list-type="picture"
+                        :on-remove="delPic">
+                        <el-button slot="trigger" size="small" type="primary">上传文件</el-button>
+                        <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUploads">上传文件</el-button>-->
                         <div slot="tip" class="el-upload__tip">展示在商品详情中的产品图组,可上传多张，支持JPG，PNG格式，文件大小请不要超过300KB</div>
                     </el-upload>
                 </el-form-item>
@@ -88,12 +90,14 @@ import 'quill/dist/quill.core.css';
 import 'quill/dist/quill.snow.css';
 import 'quill/dist/quill.bubble.css';
 import { quillEditor } from 'vue-quill-editor';
-import { GOODS_ADD, API_UPLOADS, API_UPLOAD, CATEGORY_LIST } from '@/api/api-type';
+import { GOODS_ADD, API_UPLOADS, API_UPLOAD, CATEGORY_LIST, GOODS_DETAIL, GOODS_UPDATE} from '@/api/api-type';
 export default {
   name: 'CreateGoods',
     data: function(){
     
     return {
+        isEdit: this.$route.query.isEdit,
+        goods_id: this.$route.query.goods_id,
         token: localStorage.getItem('YY_ADMIN_TOKEN'),
         form: {
             title: '',
@@ -130,42 +134,80 @@ export default {
         quillEditor
     },
     created() {
-      this.$axios.post(CATEGORY_LIST, {token: this.token, page: 1, pagesize: 100}).then(res => {
-          if(res.data.error_code == 0) {
-              this.categoryList = res.data.data.data
-          }
-          console.log(this.categoryList)
-      })
+        this.$axios.post(CATEGORY_LIST, {token: this.token, page: 1, pagesize: 100}).then(res => {
+            if(res.data.error_code == 0) {
+                this.categoryList = res.data.data.data
+            }
+          // console.log(this.categoryList)
+        })
+        if (this.isEdit) {
+            // console.log(this.goods_id)
+          this.$axios.  post(GOODS_DETAIL, {token: this.token, goods_id: this.goods_id}).then(res => {
+              console.log(res.data.data)
+              let result = res.data.data
+              if(res.data.error_code == 0) {
+                  this.form.title = result.title
+                  this.form.desc = result.desc
+                  this.form.category_id = result.category_id
+                  this.form.thumb = result.thumb
+                  this.form.status = result.status.toString()
+                  this.form.sort = result.sort
+                  this.form.anum = result.anum
+                  this.form.content = result.content
+                  this.form.price = result.price
+                  // this.form.pic = result.get_goods_pic
+                  this.fileList = [{
+                      name: result.thumb,
+                      url: result.thumb
+                  }]
+                  for (let i = 0; i < result.get_goods_pic.length; i++) {
+                      let obj = {};
+                      obj.name = result.get_goods_pic[i].url
+                      obj.url = result.get_goods_pic[i].url
+                      this.fileLists.push(obj)
+                      this.form.pic.push(result.get_goods_pic[i].url)
+                  }
+                  console.log( this.form.pic)
+              }
+          })
+        }
     },
     methods: {
-        submitUpload () {
-            // 单图上传手动提交
-            this.form.thumb = '';
-            this.$refs.thumbUpload.submit();
-        },
-        submitUploads () {
-            // 多图上传手动提交
-            this.form.pic = [];
-            this.$refs.picUpload.submit();
-        },
+        // submitUploads () {
+        //     // 单图上传手动提交
+        //     // this.form.pic = '';
+        //     // this.$refs.picUpload.submit();
+        // },
         onSubmit(formName) {
             let _this = this
-            // this.$refs.picUpload.submit();
-            // this.$refs.thumbUpload.submit();
             setTimeout(function () {
                 _this.$refs[formName].validate((valid) => {
                     if (valid) {
                         _this.form.token = _this.token
-                        _this.$axios.post(GOODS_ADD, _this.form).then(res => {
-                            console.log(res)
-                            if(res.data.error_code == 0) {
-                                console.log(11111111111)
-                                _this.$message.success('商品创建成功！');
-                                _this.$router.push('/goodslist')
-                            } else {
-                                this.$message.error(res.data.error_msg)
-                            }
-                        })
+                        if (_this.isEdit) {
+                            _this.form.goods_id = _this.goods_id
+                            _this.$axios.post(GOODS_UPDATE, _this.form).then(res => {
+                                // console.log(res)
+                                if(res.data.error_code == 0) {
+                                    // console.log(11111111111)
+                                    _this.$message.success('商品修改成功！');
+                                    _this.$router.push('/goodslist')
+                                } else {
+                                    this.$message.error(res.data.error_msg)
+                                }
+                            })
+                        } else {
+                            _this.$axios.post(GOODS_ADD, _this.form).then(res => {
+                                // console.log(res)
+                                if(res.data.error_code == 0) {
+                                    // console.log(11111111111)
+                                    _this.$message.success('商品创建成功！');
+                                    _this.$router.push('/goodslist')
+                                } else {
+                                    this.$message.error(res.data.error_msg)
+                                }
+                            })
+                        }
                        
                     } else {
                         console.log('error submit!!');
@@ -188,8 +230,8 @@ export default {
                 let formData = new FormData(document.getElementById('form'))
                 formData.append('file', file)
                 formData.set('model', 'goods')
-                let files = formData
-                console.log(files.get('model'))
+                // let files = formData
+                // console.log(files.get('model'))
                 this.$axios({
                     url: API_UPLOAD,
                     method: 'POST',
@@ -219,13 +261,9 @@ export default {
                 this.$message.error(file.name + '图片大小不能超过 300kb!');
                 return false
             } else {
-                console.log(file.name)
-                console.log(111)
                 let formData = new FormData(document.getElementById('form'))
                 formData.append('file[]',file)
                 formData.set('model', 'goods')
-                let files = formData
-                console.log(files.getAll('file'))
                 this.$axios({
                     url: API_UPLOADS,
                     method: 'POST',
@@ -234,7 +272,7 @@ export default {
                     async: false,
                     contentType: false
                 }).then((res) => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     if (res.data.error_code == 0) {
                         this.form.pic.push(res.data.data[0].url);
                         this.$message.success('图片上传成功！')
@@ -243,8 +281,21 @@ export default {
                 }).catch(function (error) {
                     console.log(error)
                 })
+                
             }
             // return isLt2M;
+        },
+        delThumb(file, fileList) {
+            this.form.thumb = []
+        },
+        delPic(file, fileList) {
+            this.form.pic=[]
+            // console.log(file)
+            // console.log(fileList)
+            for (let i = 0; i < fileList.length; i++) {
+                this.form.pic.push(fileList[i].url)
+            }
+            // console.log(this.form.pic)
         }
     }
   }

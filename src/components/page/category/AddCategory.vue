@@ -1,6 +1,6 @@
 <template>
 <div class="container">
-    <el-form id="form" ref="for11111m"  :rules="rules" :model="form" label-width="120px">
+    <el-form id="form" ref="form"  :rules="rules" :model="form" label-width="120px" :disabled="isDetail">
        <el-form-item label="分类名称：" prop="title">
            <el-input v-model="form.title" placeholder="请输入分类名称" :maxlength="20"></el-input>
        </el-form-item>
@@ -17,16 +17,18 @@
                 name="thumbUpload"
                 accept="image/jpeg,image/png"
                 :limit="1"
+                :file-list="fileList"
                 :http-request='submitThumbUpload'
                 :before-upload="beforeThumbUpload"
-                list-type="picture">
+                list-type="picture"
+                :on-remove="delThumb">
                 <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                 <!--<el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传文件</el-button>-->
                 <div slot="tip" class="el-upload__tip">支持JPG，PNG格式，单张大小请小于500Kb</div>
             </el-upload>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" @click="onSubmit('form')">上传</el-button>
+            <el-button type="primary" @click="onSubmit('form')">保存</el-button>
             <!--<el-button>重置</el-button>-->
         </el-form-item>
     </el-form>
@@ -34,11 +36,16 @@
 </template>
 
 <script>
-import { CATEGORY_ADD, API_UPLOAD} from '@/api/api-type'
+import { CATEGORY_ADD, API_UPLOAD, CATEGORY_DETAIL, CATEGORY_UPDATE} from '@/api/api-type'
 export default {
     name: 'AddBanner',
     data () {
         return {
+            category_id: this.$route.query.id,
+            isEdit: this.$route.query.isEdit,
+            isDetail: this.$route.query.isDetail,
+            token: localStorage.getItem('YY_ADMIN_TOKEN'),
+            fileList: [],
             form: {
                 token: localStorage.getItem('YY_ADMIN_TOKEN'),
                 title: '',
@@ -55,6 +62,11 @@ export default {
             }
         }
     },
+    created() {
+        if (this.isEdit || this.isDetail) {
+            this.initData()
+        }
+    },
     methods: {
         //我把自动上传改成true了，这段没必要了
         // submitUpload () {
@@ -62,6 +74,26 @@ export default {
         //     // this.form.pic = '';
         //     this.$refs.thumbUpload.submit();
         // },
+        initData() {
+            let _this = this
+            this.$axios.post(CATEGORY_DETAIL, {token: this.token, category_id: this.category_id}).then(res => {
+                // console.log(res)
+                let result = res.data.data
+                if (res.data.error_code == 0) {
+                    _this.form = {
+                        title: result.title,
+                        sort: result.sort,
+                        desc: result.desc,
+                        pic: result.pic,
+                        thumb: result.thumb
+                    }
+                    _this.fileList = [{
+                        name: result.pic,
+                        url: result.pic
+                    }]
+                }
+            })
+        },
         beforeThumbUpload (file) {
             const isLt2M = file.size / 1024 < 500;
             if (!isLt2M) {
@@ -98,22 +130,38 @@ export default {
         },
         submitThumbUpload () {
         },
+        delThumb(file, fileList) {
+            this.form.thumb = []
+        },
         onSubmit (formName) {
             let _this = this
             _this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    // _this.form.token = _this.token
-                    _this.$axios.post(CATEGORY_ADD, _this.form).then(res => {
-                        console.log(res)
-                        if(res.data.error_code == 0) {
-                            // console.log(11111111111)
-                            _this.$message.success('分类创建成功！');
-                            _this.$router.push('/categorylist')
-                        } else {
-                            this.$message.error(res.data.error_msg)
-                        }
-                    })
-
+                    _this.form.token = _this.token
+                    _this.form.category_id = _this.category_id
+                    if (_this.isEdit) {
+                        _this.$axios.post(CATEGORY_UPDATE, _this.form).then(res => {
+                            console.log(res)
+                            if(res.data.error_code == 0) {
+                                // console.log(11111111111)
+                                _this.$message.success('分类修改成功！');
+                                _this.$router.push('/categorylist')
+                            } else {
+                                this.$message.error(res.data.error_msg)
+                            }
+                        })
+                    } else {
+                        _this.$axios.post(CATEGORY_ADD, _this.form).then(res => {
+                            console.log(res)
+                            if(res.data.error_code == 0) {
+                                // console.log(11111111111)
+                                _this.$message.success('分类创建成功！');
+                                _this.$router.push('/categorylist')
+                            } else {
+                                this.$message.error(res.data.error_msg)
+                            }
+                        })
+                    }
                 } else {
                     console.log('error submit!!');
                     return false;

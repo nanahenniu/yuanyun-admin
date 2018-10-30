@@ -89,7 +89,7 @@
                 let _this = this
                 this.$axios.post(CANTACT_UPDATE, {token: _this.token, contact_id: _this.contactId}).then(res => {
                     if (res.data.error_code == 0) {
-                        _this.$message.success('删除成功');
+                        _this.$message.success('成功处理！');
                         _this.delVisible = false;
                         _this.getData()
                     } else {

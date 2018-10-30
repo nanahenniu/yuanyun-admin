@@ -108,10 +108,12 @@ export default {
         // 确定删除
         deleteRow(){
             this.tableData.splice(this.idx, 1);
+            let _this =this
             this.$axios.post(ADMIN_DELETE, {token: this.token, admin_id: this.adminId}).then(res => {
                 if (res.data.error_code == 0) {
                     this.$message.success('删除成功');
                     this.delVisible = false;
+                    _this.getData()
                 } else {
                     this.$message.waiting(res.data.error_msg)
                 }

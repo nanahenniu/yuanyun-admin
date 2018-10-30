@@ -14,14 +14,14 @@
                     </el-tooltip>
                 </div>
                 <!-- 消息中心 -->
-                <div class="btn-bell">
-                    <el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">
-                        <router-link to="/tabs">
-                            <i class="el-icon-bell"></i>
-                        </router-link>
-                    </el-tooltip>
-                    <span class="btn-bell-badge" v-if="message"></span>
-                </div>
+                <!--<div class="btn-bell">-->
+                    <!--<el-tooltip effect="dark" :content="message?`有${message}条未读消息`:`消息中心`" placement="bottom">-->
+                        <!--<router-link to="/tabs">-->
+                            <!--<i class="el-icon-bell"></i>-->
+                        <!--</router-link>-->
+                    <!--</el-tooltip>-->
+                    <!--<span class="btn-bell-badge" v-if="message"></span>-->
+                <!--</div>-->
                 <!-- 用户头像 -->
                 <div class="user-avator"><img src="static/img/img.jpg"></div>
                 <!-- 用户名下拉菜单 -->
@@ -30,12 +30,12 @@
                         {{username}} <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <a href="http://blog.gdfengshuo.com/about/" target="_blank">
-                            <el-dropdown-item>关于作者</el-dropdown-item>
-                        </a>
-                        <a href="https://github.com/lin-xin/vue-manage-system" target="_blank">
-                            <el-dropdown-item>项目仓库</el-dropdown-item>
-                        </a>
+                        <!--<a href="http://blog.gdfengshuo.com/about/" target="_blank">-->
+                            <!--<el-dropdown-item>关于作者</el-dropdown-item>-->
+                        <!--</a>-->
+                        <!--<a href="https://github.com/lin-xin/vue-manage-system" target="_blank">-->
+                            <!--<el-dropdown-item>项目仓库</el-dropdown-item>-->
+                        <!--</a>-->
                         <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -45,13 +45,15 @@
 </template>
 <script>
     import bus from '../common/bus';
+    import { ADMIN_LOGOUT } from '@/api/api-type'
     export default {
         data() {
             return {
                 collapse: false,
                 fullscreen: false,
                 name: 'linxin',
-                message: 2
+                message: 2,
+                token: localStorage.getItem('YY_ADMIN_TOKEN'),
             }
         },
         computed:{
@@ -65,7 +67,13 @@
             handleCommand(command) {
                 if(command == 'loginout'){
                     localStorage.removeItem('ms_username')
-                    this.$router.push('/login');
+                    this.$axios.post(ADMIN_LOGOUT, {token: this.token}).then(res => {
+                        if (res.data.error_code == 0) {
+                            this.$router.push('/login');
+                        } else {
+                            this.$message.error(res.data.error_msg)
+                        }
+                    })
                 }
             },
             // 侧边栏折叠

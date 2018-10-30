@@ -72,6 +72,7 @@
                     })
                 }
                 bus.$emit('tags', this.tagsList);
+                // console.log(this.tagsList)
             },
             handleTags(command){
                 command === 'other' ? this.closeOther() : this.closeAll();
@@ -88,6 +89,11 @@
             }
         },
         created(){
+            // bus.$on('newroute', function (val) {
+            //     this.$route.meta.title = val
+            //     console.log(val)
+            // })
+            // console.log(this.$route.meta.title)
             this.setTags(this.$route);
         }
     }

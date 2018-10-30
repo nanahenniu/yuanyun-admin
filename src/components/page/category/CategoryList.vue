@@ -12,7 +12,7 @@
                 width="180"
                 align="center">
                 <template slot-scope="scope">
-                    <router-link class="check-link" :to="{path:'/addCategory',query: {id: scope.row.id}}">
+                    <router-link class="check-link" :to="{path:'/addCategory',query: {id: scope.row.id, isDetail: true}}">
                         <span style="margin-left: 10px" class="check-link">{{ scope.row.title }}</span>
                     </router-link>
                 </template>
@@ -34,6 +34,7 @@
             </el-table-column>
             <el-table-column label="操作" align="center" width="200">
                 <template slot-scope="scope">
+                    <el-button type="text" icon="el-icon-edit-outline" class="red" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     <el-button type="text" icon="el-icon-delete" class="red" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -105,10 +106,12 @@ export default {
       // 确定删除
       deleteRow(){
           this.listData.splice(this.idx, 1);
+          let _this = this;
           this.$axios.post(CATEGORY_DELETE, {token: this.token, category_id: this.categoryId}).then(res => {
               if (res.data.error_code == 0) {
                   this.$message.success('删除成功');
-                      this.delVisible = false;
+                  this.delVisible = false;
+                  _this.initData()
               } else {
                   this.$message.waiting(res.data.error_msg)
               }
@@ -126,6 +129,15 @@ export default {
       handleClose(done) {
           this.previewUrl = ''
           done()
+      },
+      handleEdit(index, row) {
+          this.$router.push({
+              path: '/addCategory',
+              query: {
+                  id: row.id,
+                  isEdit: true
+              }
+          })
       }
   }
 }
