@@ -59,7 +59,7 @@ export default {
             form: {
                 token: localStorage.getItem('YY_ADMIN_TOKEN'),
                 title: '',
-                sort: '',
+                sort: 0,
                 type: '1',
                 content: '',
                 thumb: ''
@@ -83,10 +83,7 @@ export default {
     created () {
         if (this.isEdit) {
             this.initData()
-            // this.$route.meta.title='修改资讯'
-            // bus.$emit('newroute', this.$route.meta.title)
         }
-        // console.log(this.$route.meta.title)
     },
     methods: {
         initData() {
@@ -175,7 +172,6 @@ export default {
                         _this.$axios.post(INFO_ADD, _this.form).then(res => {
                             console.log(res)
                             if(res.data.error_code == 0) {
-                                // console.log(11111111111)
                                 _this.$message.success('资讯创建成功！');
                                 _this.$router.push('/infolist')
                             } else {
@@ -183,9 +179,8 @@ export default {
                             }
                         })
                     }
-            
                 } else {
-                    console.log('error submit!!');
+                    _this.$message.error('error submit!!');
                     return false;
                 }
             });
