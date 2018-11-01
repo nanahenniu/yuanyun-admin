@@ -103,8 +103,8 @@ $axios.interceptors.response.use(
     if (response.data.error_code === 1002 || response.data.error_code === 1019 || response.data.error_code === 1003) {
       Message.error(response.data.error_msg)
       setTimeout(function () {
-          // window.location.href = 'http://meijinht.benxiong.org.cn/login'
-          window.location.href = 'http://localhost:8080/login'
+          window.location.href = 'http://meijinht.benxiong.org.cn/login'
+          // window.location.href = 'http://localhost:8080/login'
       }, 1500)
     } else if (response.data.error_code === 1011 || response.data.error_code === 1012 || response.data.error_code === 2007) {
         Message.error(response.data.error_msg)
