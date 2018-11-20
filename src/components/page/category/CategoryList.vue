@@ -99,13 +99,13 @@ export default {
           })
       },
       handleDelete(index, row) {
-          this.idx = index;
+          // this.idx = index;
           this.categoryId = row.id
           this.delVisible = true;
       },
       // 确定删除
       deleteRow(){
-          this.listData.splice(this.idx, 1);
+          // this.listData.splice(this.idx, 1);
           let _this = this;
           this.$axios.post(CATEGORY_DELETE, {token: this.token, category_id: this.categoryId}).then(res => {
               if (res.data.error_code == 0) {
@@ -113,7 +113,9 @@ export default {
                   this.delVisible = false;
                   _this.initData()
               } else {
-                  this.$message.waiting(res.data.error_msg)
+                  this.$message.error(res.data.error_msg);
+                  this.delVisible = false;
+                  _this.initData()
               }
           })
       },
