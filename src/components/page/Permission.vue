@@ -31,7 +31,6 @@ p{
     line-height: 30px;
     margin-bottom: 10px;
     text-indent: 2em;
-    text-indent: 2em;
 }
 .logout{
     color: #409EFF;
