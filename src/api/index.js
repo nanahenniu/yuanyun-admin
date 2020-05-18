@@ -78,16 +78,7 @@ $axios.interceptors.request.use(
       config.data = qs.stringify(config.data)
     }
     if (process.env.NODE_ENV === 'development') {
-      // 这里一个token，你需要在这里取到你设置好的token的值
-      // const token = localStorage['X-LONGCHAT-Token']
-      // const token = '5cc915c437c43fb8129c2437db72d734'
-      // if (token) {
-      //   // 这里将token设置到headers中，header的key是Authorization，这个key值根据你的需要进行修改即可
-      //   config.headers = {
-      // 'token': token
-      // 'User-Agent': navigator.userAgent
-      // }
-      // }
+
     }
     return config
   },
